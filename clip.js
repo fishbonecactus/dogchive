@@ -28,9 +28,16 @@ return clip.thumbnail?`<img class="thumbnail" src="${clip.thumbnail}" loading="l
 function renderClips(){
 const list=document.querySelector("#video-list");
 list.innerHTML="";
+
+if(filteredClips.length===0){
+list.innerHTML=`<article class="video-card no-result">검색 결과가 없습니다.</article>`;
+return;
+}
+
 const start=(currentPage-1)*VIDEO_PER_PAGE;
 
 filteredClips.slice(start,start+VIDEO_PER_PAGE).forEach(clip=>{
+
 const card=document.createElement("article");
 card.className="video-card";
 
@@ -52,6 +59,7 @@ ${renderThumbnail(clip)}
 </a>`;
 
 list.appendChild(card);
+
 });
 }
 
@@ -64,9 +72,15 @@ filteredClips.sort((a,b)=>new Date(b.date)-new Date(a.date));
 
 function scrollToCards(){
 const list=document.querySelector("#video-list");
+
 if(!list)return;
+
 const pos=list.getBoundingClientRect().top+window.scrollY-90;
-window.scrollTo({top:pos,behavior:"smooth"});
+
+window.scrollTo({
+top:pos,
+behavior:"smooth"
+});
 }
 
 function movePage(page){
@@ -77,18 +91,27 @@ setTimeout(scrollToCards,50);
 }
 
 function renderPagination(){
+
 const pagination=document.querySelector("#pagination");
 pagination.innerHTML="";
 
 const total=Math.ceil(filteredClips.length/VIDEO_PER_PAGE);
+
 if(total<=1)return;
 
 const addButton=(text,page)=>{
+
 const button=document.createElement("button");
+
 button.textContent=text;
-if(page===currentPage)button.classList.add("active");
+
+if(page===currentPage)
+button.classList.add("active");
+
 button.onclick=()=>movePage(page);
+
 pagination.appendChild(button);
+
 };
 
 const group=Math.floor((currentPage-1)/10);
@@ -100,74 +123,132 @@ addButton("<<",1);
 addButton("<",start-1);
 }
 
-for(let i=start;i<=end;i++)addButton(i,i);
+for(let i=start;i<=end;i++)
+addButton(i,i);
 
 if(end<total){
 addButton(">",end+1);
 addButton(">>",total);
 }
+
+}
+
+function updateClearButton(){
+
+const clear=document.querySelector("#clear-search");
+const search=document.querySelector("#search");
+
+if(!clear||!search)return;
+
+clear.style.display=search.value?"block":"none";
+
 }
 
 const search=document.querySelector("#search");
 
 if(search){
+
 search.oninput=e=>{
+
 const keyword=e.target.value.trim().toLowerCase();
 
 filteredClips=clips.filter(v=>{
 
 const title=(v.title||"").toLowerCase();
-const category=(v.category||"").toLowerCase();
 
 let date="";
+
 if(v.date){
+
 const d=v.date.split(" ")[0].split("-");
-if(d.length===3){
+
+if(d.length===3)
 date=`${d[0]}.${d[1]}.${d[2]}`;
-}
+
 }
 
-return (
-title.includes(keyword) ||
-category.includes(keyword) ||
-date.includes(keyword)
-);
+return title.includes(keyword)||date.includes(keyword);
 
 });
 
 currentPage=1;
+
 applySort();
 renderClips();
 renderPagination();
+updateClearButton();
+
 };
+
 }
 
-document.querySelectorAll(".sort-button").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".sort-button").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
+const clearSearch=document.querySelector("#clear-search");
 
-sort=btn.dataset.sort;
+if(clearSearch){
+
+clearSearch.onclick=()=>{
+
+search.value="";
+
+filteredClips=[...clips];
+
 currentPage=1;
 
 applySort();
 renderClips();
 renderPagination();
+updateClearButton();
+
 };
+
+}
+
+document.querySelectorAll(".sort-button").forEach(btn=>{
+
+btn.onclick=()=>{
+
+document.querySelectorAll(".sort-button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+sort=btn.dataset.sort;
+
+currentPage=1;
+
+applySort();
+
+renderClips();
+renderPagination();
+
+};
+
 });
 
 const themeButton=document.querySelector("#theme-toggle");
 
 function setTheme(theme){
+
 document.body.classList.toggle("light-mode",theme==="light");
+
 localStorage.setItem("theme",theme);
+
 }
 
 if(themeButton){
+
 themeButton.onclick=()=>{
-setTheme(document.body.classList.contains("light-mode")?"dark":"light");
+
+setTheme(
+document.body.classList.contains("light-mode")
+?"dark"
+:"light"
+);
+
 };
+
 }
 
 setTheme(localStorage.getItem("theme")||"dark");
+
 loadClips();

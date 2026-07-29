@@ -4,8 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Dogchive Clip</title>
+
 <link rel="icon" type="image/png" href="./favicon.png">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link rel="stylesheet" href="./style.css">
+
 </head>
 
 <body>
@@ -25,13 +29,19 @@
 </div>
 
 <div class="search-box">
+
 <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
 <circle cx="10.5" cy="10.5" r="6.5"></circle>
 <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
 </svg>
 
 <input id="search" type="text">
+
+<button id="clear-search" aria-label="검색 초기화">×</button>
+
 </div>
+
+<div class="right-controls">
 
 <div class="sort-buttons">
 <button class="sort-button active" data-sort="latest">최신순</button>
@@ -52,11 +62,13 @@
 <line x1="4" y1="20" x2="7" y2="17"></line>
 </svg>
 
-<svg class="theme-icon moon-icon" viewBox="0 0 24">
+<svg class="theme-icon moon-icon" viewBox="0 0 24 24">
 <path d="M21 12.8A9 9 0 1 1 11.2 3A7 7 0 0 0 21 12.8Z"></path>
 </svg>
 
 </button>
+
+</div>
 
 </section>
 
